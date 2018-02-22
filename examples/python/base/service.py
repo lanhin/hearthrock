@@ -21,15 +21,17 @@ class RockApiService:
 
             def do_POST(self):
                 content_length = int(self.headers['Content-Length'])
-                raw_data = self.rfile.read(content_length)
+                raw_data = self.rfile.read(content_length).decode('utf-8')
                 json_data = json.loads(raw_data)
 
+                print("[json_data]", json_data)
                 if self.path == "/trace":
                     ret = _trace.trace(json_data)
                 elif self.path == "/mulligan":
                     ret = _bot.get_mulligan_action(json_data)
                 elif self.path == "/play":
                     ret = _bot.get_play_action(json_data)
+                print("[ret]",ret,"\n")
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(bytes(json.dumps(ret), 'utf-8'))
